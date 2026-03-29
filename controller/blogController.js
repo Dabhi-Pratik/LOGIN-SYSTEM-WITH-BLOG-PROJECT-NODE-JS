@@ -4,16 +4,20 @@ import Blog from "../model/blogModel.js";
 
 const createBlog = async (req, res, next) => {
   try {
-    const image = req.files["image"]?.[0];
-    const video = req.files["video"]?.[0];
+    const image = req.files?.image?.[0];
+    const video = req.files?.video?.[0];
+
+    if (!image) {
+      return next(new HttpError("Image is required", 400));
+    }
 
     const newBlog = new Blog({
       title: req.body.title,
       description: req.body.description,
-      image: image?.path,
+      image: image.path,
       video: video?.path || null,
       cloudinary_id: {
-        image_id: image?.filename,
+        image_id: image.filename,
         video_id: video?.filename || null,
       },
     });
@@ -22,7 +26,7 @@ const createBlog = async (req, res, next) => {
 
     res.status(201).json({
       message: "Blog Created Successfully",
-      data: newBlog,
+      newBlog,
     });
   } catch (error) {
     next(new HttpError(error.message));
@@ -87,7 +91,7 @@ export const updateBlog = async (req, res) => {
 
     res.json({ message: "Blog Updated Successfully..!", blog });
   } catch (error) {
-    next(new HttpError(error.message)); 
+    next(new HttpError(error.message));
   }
 };
 
