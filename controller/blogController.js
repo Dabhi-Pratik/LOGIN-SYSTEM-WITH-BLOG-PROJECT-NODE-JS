@@ -59,7 +59,7 @@ const getById = async (req, res, next) => {
   }
 };
 
-export const updateBlog = async (req, res) => {
+export const updateBlog = async (req, res,next) => {
   try {
     const blog = await Blog.findById(req.params.id);
 
